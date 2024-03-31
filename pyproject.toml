@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "image-generator-apis"
+version = "0.1.0"
+description = "Image Generator API"
+authors = ["Seonwoong Nah <nasw100@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+diffusers = "^0.27.2"
+transformers = "^4.39.2"
+accelerate = "^0.28.0"
+fastapi = "^0.110.0"
+uvicorn = "^0.29.0"
+torch = "^2.2.2"
+torchvision = "^0.17.2"
+torchaudio = "^2.2.2"
+numpy = "^1.26.4"
+pytest = "^8.1.1"
+pillow = "^10.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
