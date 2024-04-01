@@ -1,23 +1,37 @@
-from .inference import InferenceEngine
+import os
 
-class AbstractProcessor :
-    pass
+from abc import abstractmethod, ABCMeta
+from pathlib import Path
+from typing import Union
 
-class Preprocessor(AbstractProcessor) :
-    pass
+from .preprocess import ImagePreprocessor
+from .inference import DiffusionEngine
+from .postprocess import ImagePostprocessor
 
-class Postprocessor(AbstractProcessor) :
-    pass
+class Transformer(metaclass=ABCMeta) :
+    @abstractmethod
+    def preprocess(self) :
+        pass
+    
+    @abstractmethod
+    def predict(self) :
+        pass
 
-class Transformer :
+    @abstractmethod
+    def postprocess(self) :
+        pass
+
+class ImageGeneratorTransformer(Transformer) :
     def __init__(self) :
-        self.inferer = InferenceEngine()
+        self.preprocessor = ImagePreprocessor()
+        self.inferer = DiffusionEngine()
+        self.postprocessor = ImagePostprocessor()
 
-    def preprocess() :
+    def preprocess(self) :
         pass
 
     def predict(self, prompt: str) :
-        self.inferer.predict()
+        self.predicted = self.inferer.predict(prompt)
 
-    def postprocess() :
-        pass
+    def postprocess(self, fp: Union[str, Path, os.PathLike]) :
+        self.postprocessor(self.predicted).save(fp)

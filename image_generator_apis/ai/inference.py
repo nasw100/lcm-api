@@ -1,14 +1,19 @@
-from typing import Literal, Union
+from abc import abstractmethod, ABCMeta
+from typing import Literal, Union, Any
 from PIL import Image
 from diffusers import DiffusionPipeline
 from pathlib import Path
 
 from ..exceptions.ai import ParameterOutOfRange, NoResultImage
+from ..core.settings import get_envs
 
 import os
 import torch
 
-class InferenceEngine :
+settings = get_envs()
+
+
+class DiffusionEngine :
     def __init__(self, 
                  model: str = "SimianLuo/LCM_Dreamshaper_v7", 
                  device: Literal["cuda", "mps", "cpu"] = "mps", 
@@ -27,7 +32,7 @@ class InferenceEngine :
             local (bool, optional): The PC whose memory is below 40GB is regarded as local. Defaults to True.
         """
         self.result = None
-        self.pipe = DiffusionPipeline.from_pretrained(model)
+        self.pipe: DiffusionPipeline = DiffusionPipeline.from_pretrained(model)
         self.pipe.to(torch_device=device, torch_dtype=torch_dtype)
 
         if local :
@@ -62,18 +67,3 @@ class InferenceEngine :
                          output_type=output_type)
         
         return self.result
-    
-    def save_result(self, fp: Union[str, Path, os.PathLike]) :
-        """Save result image
-
-        Args:
-            fp (Union[str, Path, os.PathLike]): _description_
-        """
-
-        if self.result :
-            result_image = self.result.images[0]
-            if type(result_image) == Image.Image :
-                result_image.save(fp)
-
-        else :
-            raise NoResultImage(message="run predict and make an result before this function: save_result")

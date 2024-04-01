@@ -3,3 +3,6 @@ class ParameterOutOfRange(Exception) :
 
 class NoResultImage(Exception) :
     pass
+
+class NotSupportedMediaType(Exception) :
+    pass
